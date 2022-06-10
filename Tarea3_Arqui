@@ -1,0 +1,142 @@
+
+// Code your design here
+module full_adder(input logic a,b,cin,
+                  output logic cout, s);
+  assign s = xor(xor(a,b),cin);
+  assign cout = and(a,b) | and(a,cin) | and(b,cin);
+endmodule;
+
+module cla_block(input logic [3:0] a,b, cin, clk,
+                 output logic cout,
+                 output logic [3:0] s);
+  logic g0, g1, g2, g3;
+  logic p0, p1, p2, p3;
+  logic c0, c1, c2, c3;
+  logic [3:0] gg, pp;
+  always_ff @ (posedge clk)
+    begin
+      g0 <= a[0] & b[0];
+      p0 <= a[0] | b[0];
+      g1 <= a[1] & b[1];
+      p1 <= a[1] | b[1];
+      g2 <= a[2] & b[2];
+      p2 <= a[2] | b[2];
+      g3 <= a[3] & b[3];
+      p3 <= a[3] | b[3];
+      
+      gg = g3 | (p3 & (g2 | (p2 & (g1 | (p1 & g0)))));
+      pp = p3 & p2 & p1 & p0;
+      cout = gg + (pp & cin);
+      
+      full_adder(a[0], b[0], cin, c0, s[0]);
+      full_adder(a[1], b[1], c0, c1, s[1]);
+      full_adder(a[2], b[2], c1, c2, s[2]);
+      full_adder(a[3], b[3], c2, c3, s[3]);
+    end
+endmodule
+  
+module sum(input logic clk,
+           input logic [7:0] a,b
+           output logic [7:0] y);
+  logic c1, c2;
+  always_ff @ (posedge clk)
+    begin
+      cla_block(a[3:0], b[3:0], 0, clk, c1, y[0:3]);
+      cla_block(a[7:4], b[7:4], c1, clk, c2, y[7:4]);
+    end
+endmodule
+      
+module sust(input logic clk,
+            input logic [7:0] a, b,
+            output logic [7:0] y);
+  always_ff @ (posedge clk)
+    begin
+      full_adder(
+
+
+module not(input logic a,
+           output logic y);
+  assign y = ~a;
+endmodule
+
+module or(input logic a,b,
+          output logic y);
+  assign y = a | b;
+endmodule
+
+module and(input logic a,b,
+           output logic y);
+  assign y = a & b;
+endmodule
+
+module xor(input logic a,b,
+           output logic y);
+  assign y = ( a & ~ b) | ( ~a & b);
+endmodule
+
+
+module lsl(input logic [7:0] a,b,
+           output logic [7:0] y);
+  always_comb
+    case (b)
+      0: y = a;
+      1: y = {a[6:0], 1'b0};
+      2: y = {a[5:0], 2'b0};
+      3: y = {a[4:0], 3'b0};
+      4: y = {a[3:0], 4'b0}:
+      5: y = {a[2:0], 5'b0};
+      6: y = {a[1:0], 6'b0};
+      7: y = {a[0], 7'b0};
+      default: y = 8'b0;
+    endcase
+endmodule
+      
+module lsr(input logic [7:0] a,b,
+           output logic [7:0] y);
+  always_comb
+    case (b)
+      0: y = a;
+      1: y = {1'b0, a[7:1]};
+      2: y = {2'b0, a[7:2]);
+      3: y = {3'b0, a[7:3]};
+      4: y = {4'b0, a[7:4];
+      5: y = {5'b0, a[7:5]};
+      6: y = {6'b0, a[7:6]};
+      7: y = {7'b0, a[7]};
+      default: y = 8'b0;
+	endcase
+endmodule
+                      
+module asr(input logic [7:0] a,b,
+           output logic [7:0] y);
+  always_comb
+    case (b)
+      0: y = a;
+      1: y = {1'b1 a[7:1]};
+      2: y = {2'b11 a[7:2]};
+      3: y = {3'b111, a[7:3]};
+      4: y = {4'b1111, a[7:4]};
+      5: y = {5'b11111, a[7:5]};
+      6: y = {6'b111_111, a[7:6]};
+      7: y = {7'b11_11_111, a[7]};
+      default: y = 8'b1;
+	endcase
+endmodule
+              
+module rol(input logic [7:0] a,b,
+           output logic [7:0] y);
+  logic b_mod;
+  //b_mod = b - (b/8)
+  
+  always_comb
+    case (b_mod)
+      0: y = a;
+      1: y = {a[6:0], a[7]};
+      2: y = {a[5:0], a[7:6]};
+      3: y = {a[4:0], a[7:5]};
+      4: y = {a[3:0], a[7:4]};
+      5: y = {a[2:0], a[7:3]};
+      6: y = {a[1:0], a[7:2]};
+      7: y = {a[0], a [7:1]};
+    endcase
+endmodule
